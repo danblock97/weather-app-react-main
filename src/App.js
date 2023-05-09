@@ -106,7 +106,6 @@ function WeatherApp() {
               {data.weather ? <p>{data.weather[0].main}</p> : null}
             </div>
           </div>
-
           {data.name !== undefined && (
             <div className="bottom">
               <div className="feels">
@@ -130,24 +129,28 @@ function WeatherApp() {
             </div>
           )}
 
-          {uniqueDates.map((date, index) => {
-            const forecast = forecastData.filter((item) =>
-              item.dt_txt.includes(date)
-            );
-            return (
-              <div className="forecast" key={index}>
-                <div className="forecast-day">
-                  <p>{getDay(date)}</p>
+          <div className="forecast-container">
+            {uniqueDates.map((date, index) => {
+              const forecast = forecastData.filter((item) =>
+                item.dt_txt.includes(date)
+              );
+              return (
+                <div className="forecast" key={index}>
+                  <div className="forecast-day">
+                    <p>{getDay(date)}</p>
+                  </div>
+                  <div className="forecast-info">
+                    <div className="forecast-temp">
+                      <p>{forecast[0].main.temp.toFixed()}°C</p>
+                    </div>
+                    <div className="forecast-description">
+                      <p>{forecast[0].weather[0].main}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="forecast-temp">
-                  <p>{forecast[0].main.temp.toFixed()}°C</p>
-                </div>
-                <div className="forecast-description">
-                  <p>{forecast[0].weather[0].main}</p>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
 
           <button onClick={clearResults}>Clear Results</button>
         </div>

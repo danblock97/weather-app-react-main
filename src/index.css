@@ -5,8 +5,7 @@
 
 /* Set background image */
 body {
-  background-image: url("./assets/sunset.jpg");
-  background-size: cover;
+  background-image: url("./assets/sunset.jpg") no-repeat center center/cover;;
   overflow: hidden;
 }
 

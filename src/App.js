@@ -141,7 +141,10 @@ function WeatherApp() {
                   </div>
                   <div className="forecast-info">
                     <div className="forecast-temp">
-                      <p>{forecast[0].main.temp.toFixed()}°C</p>
+                      <p>Temp: {forecast[0].main.temp.toFixed()}°C</p>
+                      <p>
+                        Feels Like: {forecast[0].main.feels_like.toFixed()}°C
+                      </p>
                     </div>
                     <div className="forecast-description">
                       <p>{forecast[0].weather[0].main}</p>

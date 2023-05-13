@@ -141,20 +141,29 @@ function WeatherApp() {
               </div>
             </div>
           )}
+          <h2>3 Hour Forecast</h2>
           {hourlyForecastData.length > 0 && (
-            <div className="hourly-forecast-container">
-              <div className="hourly-forecast">
-                {hourlyForecastData.map((item, index) => (
-                  <div className="hourly-forecast-item" key={index}>
-                    <p>{item.dt_txt.split(" ")[1]}</p>
+            <div className="forecast-container">
+              {hourlyForecastData.map((item, index) => (
+                <div className="forecast" key={index}>
+                  <div className="forecast-day">
+                    <p>
+                      {new Date(item.dt_txt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <div className="forecast-temp">
                     <p>Temp: {item.main.temp.toFixed()}°C</p>
                     <p>Feels Like: {item.main.feels_like.toFixed()}°C</p>
                     <p>{item.weather[0].main}</p>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           )}
+          <h2>Daily Forecast</h2>
           <div className="forecast-container">
             {uniqueDates.map((date, index) => {
               const forecast = forecastData.filter((item) =>

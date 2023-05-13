@@ -42,13 +42,14 @@ button {
 
 /* Set container max width and center it */
 .container {
+  position: relative;
   max-width: 60rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 0.5rem;
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -110,7 +111,7 @@ button {
   width: 8rem;
   height: 8rem;
   border-radius: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
   padding: 0.5rem;
 }
 
@@ -145,19 +146,6 @@ button:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
-
-.hourly-forecast-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 1rem;
-  flex: 0 0 auto;
-  width: 8rem;
-  height: rem;
-  border-radius: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.3);
-  padding: 0.5rem;
 }
 
 .hourly-forecast-item p {

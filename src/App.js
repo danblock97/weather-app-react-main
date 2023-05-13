@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 function WeatherApp() {
   const [data, setData] = useState({});
   const [forecastData, setForecastData] = useState([]);
+  const [hourlyForecastData, setHourlyForecastData] = useState([]);
   const [location, setLocation] = useState("");
   const [showResults, setShowResults] = useState(true);
 
@@ -30,6 +31,18 @@ function WeatherApp() {
         .then((response) => {
           setForecastData(response.data.list);
           console.log(response.data.list);
+
+          const currentDate = new Date();
+          const next16Hours = response.data.list.filter((item) => {
+            const forecastDate = new Date(item.dt_txt);
+            const timeDifference =
+              forecastDate.getTime() - currentDate.getTime();
+            const hoursDifference = Math.ceil(
+              timeDifference / (1000 * 60 * 60)
+            );
+            return hoursDifference >= 1 && hoursDifference <= 16;
+          });
+          setHourlyForecastData(next16Hours);
         })
         .catch((error) => {
           toast.error("Error fetching weather data");
@@ -128,7 +141,20 @@ function WeatherApp() {
               </div>
             </div>
           )}
-
+          {hourlyForecastData.length > 0 && (
+            <div className="hourly-forecast-container">
+              <div className="hourly-forecast">
+                {hourlyForecastData.map((item, index) => (
+                  <div className="hourly-forecast-item" key={index}>
+                    <p>{item.dt_txt.split(" ")[1]}</p>
+                    <p>Temp: {item.main.temp.toFixed()}°C</p>
+                    <p>Feels Like: {item.main.feels_like.toFixed()}°C</p>
+                    <p>{item.weather[0].main}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="forecast-container">
             {uniqueDates.map((date, index) => {
               const forecast = forecastData.filter((item) =>

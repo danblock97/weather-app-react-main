@@ -137,6 +137,33 @@ button:hover {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
+.hourly-forecast-container {
+  margin-bottom: 2rem;
+}
+
+.hourly-forecast {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hourly-forecast-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1rem;
+  flex: 0 0 auto;
+  width: 8rem;
+  height: rem;
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 0.5rem;
+}
+
+.hourly-forecast-item p {
+  margin: 0.5rem 0;
+}
+
 @media (min-width: 768px) {
   .forecast-container {
     overflow: hidden;

@@ -156,4 +156,7 @@ button:hover {
   .forecast-container {
     overflow: hidden;
   }
+  .container {
+    overflow: hidden;
+  }
 }

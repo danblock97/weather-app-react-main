@@ -165,6 +165,15 @@ button:hover {
   margin: 0.5rem 0;
 }
 
+.pinpoint {
+  font-size: 2rem;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
 @media (min-width: 768px) {
   .forecast-container {
     overflow: hidden;

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Icon } from "@iconify/react";
 
 function WeatherApp() {
   const [data, setData] = useState({});
@@ -87,6 +88,59 @@ function WeatherApp() {
     return weekday[new Date(date).getDay()];
   };
 
+  const handleLocationClick = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        axios
+          .get(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+          )
+          .then((response) => {
+            setData(response.data);
+            console.log(response.data);
+
+            // Fetching daily forecast
+            axios
+              .get(
+                `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+              )
+              .then((forecastResponse) => {
+                setForecastData(forecastResponse.data.list);
+                console.log(forecastResponse.data.list);
+
+                const currentDate = new Date();
+                const next16Hours = forecastResponse.data.list.filter(
+                  (item) => {
+                    const forecastDate = new Date(item.dt_txt);
+                    const timeDifference =
+                      forecastDate.getTime() - currentDate.getTime();
+                    const hoursDifference = Math.ceil(
+                      timeDifference / (1000 * 60 * 60)
+                    );
+                    return hoursDifference >= 1 && hoursDifference <= 16;
+                  }
+                );
+                setHourlyForecastData(next16Hours);
+              })
+              .catch((error) => {
+                toast.error("Error fetching forecast data");
+              });
+
+            toast.success("Weather data fetched successfully");
+            setShowResults(true);
+          })
+          .catch((error) => {
+            toast.error("Error fetching weather data");
+          });
+        setLocation("");
+      });
+    } else {
+      toast.error("Geolocation is not supported by your browser");
+    }
+  };
+
   return (
     <div className="app">
       <ToastContainer />
@@ -104,6 +158,11 @@ function WeatherApp() {
           }}
           placeholder="Enter Location"
           type="text"
+        />
+        <Icon
+          className="pinpoint"
+          onClick={handleLocationClick}
+          icon="pepicons-pop:pinpoint"
         />
       </div>
       {showResults && (

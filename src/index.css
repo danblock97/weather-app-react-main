@@ -6,8 +6,10 @@
 /* Set background image */
 .app:before {
   content: '';
-  background-color: rgba(0, 0, 0, 0.8);
-  position: absolute;
+  background-image: url(./assets/sunset.jpg);
+  background-size: cover;
+  background-position: center;
+  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
@@ -95,10 +97,11 @@ button {
 .forecast-container {
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: scroll;
+  overflow-x: auto;
   width: 100%;
   margin-bottom: 2rem;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 1rem; /* Added padding to prevent cutoff on the left */
 }
 
 .forecast {
@@ -128,7 +131,7 @@ button {
 button {
   background-color: rgba(255, 255, 255, 0.3);
   border: none;
-  border-radius: 0.25rem;
+  border-radius: 0.2rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 1.25rem;
@@ -139,7 +142,17 @@ button:hover {
 }
 
 .hourly-forecast-container {
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1rem;
+  flex: 0 0 auto;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
 }
 
 .hourly-forecast {

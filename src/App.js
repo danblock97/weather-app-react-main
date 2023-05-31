@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Icon } from "@iconify/react";
 
 function WeatherApp() {
@@ -9,7 +7,8 @@ function WeatherApp() {
   const [forecastData, setForecastData] = useState([]);
   const [hourlyForecastData, setHourlyForecastData] = useState([]);
   const [location, setLocation] = useState("");
-  const [showResults, setShowResults] = useState(true);
+  const [showResults, setShowResults] = useState(false);
+  const [activeTab, setActiveTab] = useState("daily");
 
   const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -45,9 +44,6 @@ function WeatherApp() {
           });
           setHourlyForecastData(next16Hours);
         })
-        .catch((error) => {
-          toast.error("Error fetching weather data");
-        });
       setLocation("");
     }
   };
@@ -59,12 +55,8 @@ function WeatherApp() {
         .then((response) => {
           setData(response.data);
           console.log(response.data);
-          toast.success("Weather data fetched successfully");
           setShowResults(true);
         })
-        .catch((error) => {
-          toast.error("Error fetching weather data");
-        });
       setLocation("");
     }
   };
@@ -101,7 +93,6 @@ function WeatherApp() {
             setData(response.data);
             console.log(response.data);
 
-            // Fetching daily forecast
             axios
               .get(
                 `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
@@ -124,26 +115,19 @@ function WeatherApp() {
                 );
                 setHourlyForecastData(next16Hours);
               })
-              .catch((error) => {
-                toast.error("Error fetching forecast data");
-              });
-
-            toast.success("Weather data fetched successfully");
             setShowResults(true);
           })
-          .catch((error) => {
-            toast.error("Error fetching weather data");
-          });
         setLocation("");
       });
-    } else {
-      toast.error("Geolocation is not supported by your browser");
     }
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
   };
 
   return (
     <div className="app">
-      <ToastContainer />
       <div className="search">
         <input
           value={location}
@@ -199,30 +183,25 @@ function WeatherApp() {
                 <p>Wind Speed</p>
               </div>
             </div>
+            
           )}
-          <h2>3 Hour Forecast</h2>
-          {hourlyForecastData.length > 0 && (
-            <div className="forecast-container">
-              {hourlyForecastData.map((item, index) => (
-                <div className="forecast" key={index}>
-                  <div className="forecast-day">
-                    <p>
-                      {new Date(item.dt_txt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="forecast-temp">
-                    <p>Temp: {item.main.temp.toFixed()}°C</p>
-                    <p>Feels Like: {item.main.feels_like.toFixed()}°C</p>
-                    <p>{item.weather[0].main}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <h2>Daily Forecast</h2>
+          <div className="tabs">
+            <button
+              className={activeTab === "daily" ? "active" : ""}
+              onClick={() => handleTabClick("daily")}
+            >
+              Daily Forecast
+            </button>
+            <button
+              className={activeTab === "hourly" ? "active" : ""}
+              onClick={() => handleTabClick("hourly")}
+            >
+              Hourly Forecast
+            </button>
+          </div>
+          {activeTab === "daily" && (
+            <div>
+              <h2 className="forecast-title">Daily Forecast</h2>
           <div className="forecast-container">
             {uniqueDates.map((date, index) => {
               const forecast = forecastData.filter((item) =>
@@ -248,7 +227,34 @@ function WeatherApp() {
               );
             })}
           </div>
-
+            </div>
+          )}
+          {activeTab === "hourly" && (
+            <div>
+              <h2 className="forecast-title">3 Hour Forecast</h2>
+          {hourlyForecastData.length > 0 && (
+            <div className="forecast-container">
+              {hourlyForecastData.map((item, index) => (
+                <div className="forecast" key={index}>
+                  <div className="forecast-day">
+                    <p>
+                      {new Date(item.dt_txt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <div className="forecast-temp">
+                    <p>Temp: {item.main.temp.toFixed()}°C</p>
+                    <p>Feels Like: {item.main.feels_like.toFixed()}°C</p>
+                    <p>{item.weather[0].main}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+            </div>
+          )}
           <button onClick={clearResults}>Clear Results</button>
         </div>
       )}

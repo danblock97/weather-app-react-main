@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Icon } from "@iconify/react";
 
-function WeatherApp() {
+const WeatherApp = () => {
   const [data, setData] = useState({});
   const [forecastData, setForecastData] = useState([]);
   const [hourlyForecastData, setHourlyForecastData] = useState([]);
@@ -26,37 +26,28 @@ function WeatherApp() {
 
   const getForecast = (event) => {
     if (event.key === "Enter") {
-      axios
-        .get(forecastUrl)
-        .then((response) => {
-          setForecastData(response.data.list);
-          console.log(response.data.list);
+      axios.get(forecastUrl).then((response) => {
+        setForecastData(response.data.list);
 
-          const currentDate = new Date();
-          const next16Hours = response.data.list.filter((item) => {
-            const forecastDate = new Date(item.dt_txt);
-            const timeDifference =
-              forecastDate.getTime() - currentDate.getTime();
-            const hoursDifference = Math.ceil(
-              timeDifference / (1000 * 60 * 60)
-            );
-            return hoursDifference >= 1 && hoursDifference <= 16;
-          });
-          setHourlyForecastData(next16Hours);
-        })
+        const currentDate = new Date();
+        const next16Hours = response.data.list.filter((item) => {
+          const forecastDate = new Date(item.dt_txt);
+          const timeDifference = forecastDate.getTime() - currentDate.getTime();
+          const hoursDifference = Math.ceil(timeDifference / (1000 * 60 * 60));
+          return hoursDifference >= 1 && hoursDifference <= 16;
+        });
+        setHourlyForecastData(next16Hours);
+      });
       setLocation("");
     }
   };
 
   const searchLocation = (event) => {
     if (event.key === "Enter") {
-      axios
-        .get(url)
-        .then((response) => {
-          setData(response.data);
-          console.log(response.data);
-          setShowResults(true);
-        })
+      axios.get(url).then((response) => {
+        setData(response.data);
+        setShowResults(true);
+      });
       setLocation("");
     }
   };
@@ -68,16 +59,8 @@ function WeatherApp() {
   };
 
   const getDay = (date) => {
-    let weekday = new Array(7);
-    weekday[0] = "Sunday";
-    weekday[1] = "Monday";
-    weekday[2] = "Tuesday";
-    weekday[3] = "Wednesday";
-    weekday[4] = "Thursday";
-    weekday[5] = "Friday";
-    weekday[6] = "Saturday";
-
-    return weekday[new Date(date).getDay()];
+    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return weekdays[new Date(date).getDay()];
   };
 
   const handleLocationClick = () => {
@@ -91,7 +74,6 @@ function WeatherApp() {
           )
           .then((response) => {
             setData(response.data);
-            console.log(response.data);
 
             axios
               .get(
@@ -99,24 +81,18 @@ function WeatherApp() {
               )
               .then((forecastResponse) => {
                 setForecastData(forecastResponse.data.list);
-                console.log(forecastResponse.data.list);
 
                 const currentDate = new Date();
-                const next16Hours = forecastResponse.data.list.filter(
-                  (item) => {
-                    const forecastDate = new Date(item.dt_txt);
-                    const timeDifference =
-                      forecastDate.getTime() - currentDate.getTime();
-                    const hoursDifference = Math.ceil(
-                      timeDifference / (1000 * 60 * 60)
-                    );
-                    return hoursDifference >= 1 && hoursDifference <= 12;
-                  }
-                );
+                const next16Hours = forecastResponse.data.list.filter((item) => {
+                  const forecastDate = new Date(item.dt_txt);
+                  const timeDifference = forecastDate.getTime() - currentDate.getTime();
+                  const hoursDifference = Math.ceil(timeDifference / (1000 * 60 * 60));
+                  return hoursDifference >= 1 && hoursDifference <= 12;
+                });
                 setHourlyForecastData(next16Hours);
-              })
+              });
             setShowResults(true);
-          })
+          });
         setLocation("");
       });
     }
@@ -127,8 +103,8 @@ function WeatherApp() {
   };
 
   return (
-    <div className="app">
-      <div className="search">
+    <div className="container mx-auto p-4 bg-gray-900 text-white">
+      <div className="flex items-center mb-4">
         <input
           value={location}
           onChange={(event) => setLocation(event.target.value)}
@@ -142,58 +118,60 @@ function WeatherApp() {
           }}
           placeholder="Enter Location"
           type="text"
+          className="px-4 py-2 border rounded-md mr-2 focus:outline-none bg-gray-800 text-white"
         />
         <Icon
-          className="pinpoint"
+          className="cursor-pointer"
           onClick={handleLocationClick}
           icon="pepicons-pop:pinpoint"
         />
       </div>
       {showResults && (
-        <div className="container">
-          <div className="top">
-            <div className="location">
-              <p>{data.name}</p>
-            </div>
-            <div className="temp">
-              {data.main ? <h1>{data.main.temp.toFixed()}°C</h1> : null}
-            </div>
-            <div className="description">
-              {data.weather ? <p>{data.weather[0].main}</p> : null}
+        <div>
+          <div className="flex items-center mb-4">
+            <div>
+              <p className="text-2xl font-bold">{data.name}</p>
+              {data.main && (
+                <p className="text-6xl font-bold">{data.main.temp.toFixed()}°C</p>
+              )}
+              {data.weather && <p className="text-lg">{data.weather[0].main}</p>}
             </div>
           </div>
           {data.name !== undefined && (
-            <div className="bottom">
-              <div className="feels">
-                {data.main ? (
-                  <p className="bold">{data.main.feels_like.toFixed()}°C</p>
-                ) : null}
-                <p>Feels Like</p>
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="text-center">
+                {data.main && (
+                  <p className="text-xl">{data.main.feels_like.toFixed()}°C</p>
+                )}
+                <p className="text-sm">Feels Like</p>
               </div>
-              <div className="humidity">
-                {data.main ? (
-                  <p className="bold">{data.main.humidity}%</p>
-                ) : null}
-                <p>Humidity</p>
+              <div className="text-center">
+                {data.main && (
+                  <p className="text-xl">{data.main.humidity}%</p>
+                )}
+                <p className="text-sm">Humidity</p>
               </div>
-              <div className="wind">
-                {data.wind ? (
-                  <p className="bold">{data.wind.speed.toFixed()} MPH</p>
-                ) : null}
-                <p>Wind Speed</p>
+              <div className="text-center">
+                {data.wind && (
+                  <p className="text-xl">{data.wind.speed.toFixed()} MPH</p>
+                )}
+                <p className="text-sm">Wind Speed</p>
               </div>
             </div>
-            
           )}
-          <div className="tabs">
+          <div className="flex justify-center mb-4">
             <button
-              className={activeTab === "daily" ? "active" : ""}
+              className={`text-lg px-4 py-2 rounded-md ${
+                activeTab === "daily" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+              } mr-2`}
               onClick={() => handleTabClick("daily")}
             >
               Daily Forecast
             </button>
             <button
-              className={activeTab === "hourly" ? "active" : ""}
+              className={`text-lg px-4 py-2 rounded-md ${
+                activeTab === "hourly" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+              }`}
               onClick={() => handleTabClick("hourly")}
             >
               Hourly Forecast
@@ -201,61 +179,60 @@ function WeatherApp() {
           </div>
           {activeTab === "daily" && (
             <div>
-              <h2 className="forecast-title">Daily Forecast</h2>
-          <div className="forecast-container">
-            {uniqueDates.map((date, index) => {
-              const forecast = forecastData.filter((item) =>
-                item.dt_txt.includes(date)
-              );
-              return (
-                <div className="forecast" key={index}>
-                  <div className="forecast-day">
-                    <p>{getDay(date)}</p>
-                  </div>
-                  <div className="forecast-info">
-                    <div className="forecast-temp">
-                      <p>Temp: {forecast[0].main.temp.toFixed()}°C</p>
-                      <p>
-                        Feels Like: {forecast[0].main.feels_like.toFixed()}°C
-                      </p>
+              <h2 className="text-2xl font-bold mb-2">Daily Forecast</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {uniqueDates.map((date, index) => {
+                  const forecast = forecastData.filter((item) =>
+                    item.dt_txt.includes(date)
+                  );
+                  return (
+                    <div className="border rounded-md p-4" key={index}>
+                      <div className="mb-2">
+                        <p className="text-lg font-bold">{getDay(date)}</p>
+                      </div>
+                      <div className="flex items-center">
+                        <Icon
+                          className="text-3xl mr-2"
+                          icon={`wi:owm-${forecast[0].weather[0].id}`}
+                        />
+                        <div>
+                          <p>{forecast[0].weather[0].main}</p>
+                          <p className="text-lg font-bold">
+                            {forecast[0].main.temp_max.toFixed()}°C
+                          </p>
+                          <p className="text-sm">
+                            {forecast[0].main.temp_min.toFixed()}°C
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="forecast-description">
-                      <p>{forecast[0].weather[0].main}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
             </div>
           )}
           {activeTab === "hourly" && (
             <div>
-              <h2 className="forecast-title">3 Hour Forecast</h2>
-          {hourlyForecastData.length > 0 && (
-            <div className="forecast-container">
-              {hourlyForecastData.map((item, index) => (
-                <div className="hourly-forecast" key={index}>
-                  <div className="forecast-day">
-                    <p>
-                      {new Date(item.dt_txt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="forecast-temp">
-                    <p>Temp: {item.main.temp.toFixed()}°C</p>
-                    <p>Feels Like: {item.main.feels_like.toFixed()}°C</p>
-                    <p>{item.weather[0].main}</p>
-                  </div>
-                </div>
-              ))}
+              <h2 className="text-2xl font-bold mb-2">Hourly Forecast</h2>
+              <div className="grid grid-cols-4 gap-4">
+                {hourlyForecastData.map((item, index) => {
+                  return (
+                    <div className="border rounded-md p-4" key={index}>
+                      <p className="text-lg">{item.dt_txt.split(" ")[1]}</p>
+                      <Icon
+                        className="text-3xl mt-2"
+                        icon={`wi:owm-${item.weather[0].id}`}
+                      />
+                      <p>{item.weather[0].main}</p>
+                      <p className="text-lg font-bold">
+                        {item.main.temp.toFixed()}°C
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
-            </div>
-          )}
-          <button onClick={clearResults}>Clear Results</button>
         </div>
       )}
     </div>

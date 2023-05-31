@@ -110,7 +110,7 @@ function WeatherApp() {
                     const hoursDifference = Math.ceil(
                       timeDifference / (1000 * 60 * 60)
                     );
-                    return hoursDifference >= 1 && hoursDifference <= 16;
+                    return hoursDifference >= 1 && hoursDifference <= 12;
                   }
                 );
                 setHourlyForecastData(next16Hours);
@@ -235,7 +235,7 @@ function WeatherApp() {
           {hourlyForecastData.length > 0 && (
             <div className="forecast-container">
               {hourlyForecastData.map((item, index) => (
-                <div className="forecast" key={index}>
+                <div className="hourly-forecast" key={index}>
                   <div className="forecast-day">
                     <p>
                       {new Date(item.dt_txt).toLocaleTimeString([], {

@@ -103,138 +103,148 @@ const WeatherApp = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-gray-900 text-white">
-      <div className="flex items-center mb-4">
-        <input
-          value={location}
-          onChange={(event) => setLocation(event.target.value)}
-          onKeyPress={(event) => {
-            if (event.key === "Enter") {
-              searchLocation(event);
-              getForecast(event);
-            } else if (event.key === "Backspace") {
-              clearResults();
-            }
-          }}
-          placeholder="Enter Location"
-          type="text"
-          className="px-4 py-2 border rounded-md mr-2 focus:outline-none bg-gray-800 text-white"
-        />
-        <Icon
-          className="cursor-pointer"
-          onClick={handleLocationClick}
-          icon="pepicons-pop:pinpoint"
-        />
-      </div>
-      {showResults && (
-        <div>
-          <div className="flex items-center mb-4">
-            <div>
-              <p className="text-2xl font-bold">{data.name}</p>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="max-w-lg w-full bg-white rounded-lg shadow-lg p-6">
+        <div className="flex items-center mb-4">
+          <input
+            value={location}
+            onChange={(event) => setLocation(event.target.value)}
+            onKeyPress={(event) => {
+              if (event.key === "Enter") {
+                searchLocation(event);
+                getForecast(event);
+              } else if (event.key === "Backspace") {
+                clearResults();
+              }
+            }}
+            placeholder="Enter Location"
+            type="text"
+            className="flex-grow bg-gray-200 rounded-lg py-2 px-4 mr-2 focus:outline-none"
+          />
+          <Icon
+            className="text-gray-600 cursor-pointer"
+            onClick={handleLocationClick}
+            icon="pepicons-pop:pinpoint"
+          />
+        </div>
+        {showResults && (
+          <div>
+            <div className="text-center">
+              <p className="text-3xl font-semibold mb-2">{data.name}</p>
               {data.main && (
                 <p className="text-6xl font-bold">{data.main.temp.toFixed()}°C</p>
               )}
-              {data.weather && <p className="text-lg">{data.weather[0].main}</p>}
+              {data.weather && (
+                <p className="text-xl font-semibold">{data.weather[0].main}</p>
+              )}
             </div>
-          </div>
-          {data.name !== undefined && (
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center">
-                {data.main && (
-                  <p className="text-xl">{data.main.feels_like.toFixed()}°C</p>
-                )}
-                <p className="text-sm">Feels Like</p>
+            {data.name !== undefined && (
+              <div className="grid grid-cols-3 gap-4 mt-6">
+                <div className="bg-white rounded-lg shadow-lg p-4 text-center">
+                  {data.main && (
+                    <p className="text-3xl font-bold">{data.main.feels_like.toFixed()}°C</p>
+                  )}
+                  <p className="text-lg">Feels Like</p>
+                </div>
+                <div className="bg-white rounded-lg shadow-lg p-4 text-center">
+                  {data.main && (
+                    <p className="text-3xl font-bold">{data.main.humidity}%</p>
+                  )}
+                  <p className="text-lg">Humidity</p>
+                </div>
+                <div className="bg-white rounded-lg shadow-lg p-4 text-center">
+                  {data.wind && (
+                    <p className="text-3xl font-bold">{data.wind.speed.toFixed()} MPH</p>
+                  )}
+                  <p className="text-lg">Wind Speed</p>
+                </div>
               </div>
-              <div className="text-center">
-                {data.main && (
-                  <p className="text-xl">{data.main.humidity}%</p>
-                )}
-                <p className="text-sm">Humidity</p>
-              </div>
-              <div className="text-center">
-                {data.wind && (
-                  <p className="text-xl">{data.wind.speed.toFixed()} MPH</p>
-                )}
-                <p className="text-sm">Wind Speed</p>
-              </div>
+            )}
+            <div className="flex justify-between mt-6">
+              <button
+                className={`text-lg font-semibold focus:outline-none ${
+                  activeTab === "daily" ? "text-blue-500" : ""
+                }`}
+                onClick={() => handleTabClick("daily")}
+              >
+                Daily Forecast
+              </button>
+              <button
+                className={`text-lg font-semibold focus:outline-none ${
+                  activeTab === "hourly" ? "text-blue-500" : ""
+                }`}
+                onClick={() => handleTabClick("hourly")}
+              >
+                Hourly Forecast
+              </button>
             </div>
-          )}
-          <div className="flex justify-center mb-4">
-            <button
-              className={`text-lg px-4 py-2 rounded-md ${
-                activeTab === "daily" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
-              } mr-2`}
-              onClick={() => handleTabClick("daily")}
-            >
-              Daily Forecast
-            </button>
-            <button
-              className={`text-lg px-4 py-2 rounded-md ${
-                activeTab === "hourly" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
-              }`}
-              onClick={() => handleTabClick("hourly")}
-            >
-              Hourly Forecast
-            </button>
-          </div>
-          {activeTab === "daily" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Daily Forecast</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {uniqueDates.map((date, index) => {
-                  const forecast = forecastData.filter((item) =>
-                    item.dt_txt.includes(date)
-                  );
-                  return (
-                    <div className="border rounded-md p-4" key={index}>
-                      <div className="mb-2">
-                        <p className="text-lg font-bold">{getDay(date)}</p>
-                      </div>
-                      <div className="flex items-center">
-                        <Icon
-                          className="text-3xl mr-2"
-                          icon={`wi:owm-${forecast[0].weather[0].id}`}
-                        />
+            {activeTab === "daily" && (
+              <div>
+                <h2 className="text-2xl font-bold mt-6">Daily Forecast</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  {uniqueDates.map((date, index) => {
+                    const forecast = forecastData.filter((item) =>
+                      item.dt_txt.includes(date)
+                    );
+                    return (
+                      <div
+                        className="bg-white rounded-lg shadow-lg p-4 flex items-center justify-between"
+                        key={index}
+                      >
                         <div>
-                          <p>{forecast[0].weather[0].main}</p>
-                          <p className="text-lg font-bold">
-                            {forecast[0].main.temp_max.toFixed()}°C
-                          </p>
-                          <p className="text-sm">
-                            {forecast[0].main.temp_min.toFixed()}°C
-                          </p>
+                          <p className="text-lg font-semibold">{getDay(date)}</p>
+                        </div>
+                        <div className="flex items-center">
+                          <Icon
+                            className="text-4xl"
+                            icon={`wi:owm-${forecast[0].weather[0].id}`}
+                          />
+                          <div className="ml-4">
+                            <p className="text-lg font-semibold">
+                              {forecast[0].weather[0].main}
+                            </p>
+                            <p className="text-xl">
+                              {forecast[0].main.temp_max.toFixed()}°C
+                            </p>
+                            <p className="text-xl">
+                              {forecast[0].main.temp_min.toFixed()}°C
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-          {activeTab === "hourly" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Hourly Forecast</h2>
-              <div className="grid grid-cols-4 gap-4">
-                {hourlyForecastData.map((item, index) => {
-                  return (
-                    <div className="border rounded-md p-4" key={index}>
-                      <p className="text-lg">{item.dt_txt.split(" ")[1]}</p>
-                      <Icon
-                        className="text-3xl mt-2"
-                        icon={`wi:owm-${item.weather[0].id}`}
-                      />
-                      <p>{item.weather[0].main}</p>
-                      <p className="text-lg font-bold">
-                        {item.main.temp.toFixed()}°C
-                      </p>
-                    </div>
-                  );
-                })}
+            )}
+            {activeTab === "hourly" && (
+              <div>
+                <h2 className="text-2xl font-bold mt-6">Hourly Forecast</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  {hourlyForecastData.map((item, index) => {
+                    return (
+                      <div
+                        className="bg-white rounded-lg shadow-lg p-4 text-center"
+                        key={index}
+                      >
+                        <p className="text-lg">{item.dt_txt.split(" ")[1]}</p>
+                        <Icon
+                          className="text-4xl"
+                          icon={`wi:owm-${item.weather[0].id}`}
+                        />
+                        <p>{item.weather[0].main}</p>
+                        <p className="text-xl">
+                          {item.main.temp.toFixed()}°C
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

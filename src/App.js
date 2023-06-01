@@ -59,7 +59,15 @@ const WeatherApp = () => {
   };
 
   const getDay = (date) => {
-    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const weekdays = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     return weekdays[new Date(date).getDay()];
   };
 
@@ -83,12 +91,17 @@ const WeatherApp = () => {
                 setForecastData(forecastResponse.data.list);
 
                 const currentDate = new Date();
-                const next16Hours = forecastResponse.data.list.filter((item) => {
-                  const forecastDate = new Date(item.dt_txt);
-                  const timeDifference = forecastDate.getTime() - currentDate.getTime();
-                  const hoursDifference = Math.ceil(timeDifference / (1000 * 60 * 60));
-                  return hoursDifference >= 1 && hoursDifference <= 12;
-                });
+                const next16Hours = forecastResponse.data.list.filter(
+                  (item) => {
+                    const forecastDate = new Date(item.dt_txt);
+                    const timeDifference =
+                      forecastDate.getTime() - currentDate.getTime();
+                    const hoursDifference = Math.ceil(
+                      timeDifference / (1000 * 60 * 60)
+                    );
+                    return hoursDifference >= 1 && hoursDifference <= 12;
+                  }
+                );
                 setHourlyForecastData(next16Hours);
               });
             setShowResults(true);
@@ -103,8 +116,8 @@ const WeatherApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="max-w-lg w-full bg-white rounded-lg shadow-lg p-6">
+    <div className="min-h-screen bg-hero bg-no-repeat bg-cover bg-center bg-fixed flex items-center justify-center">
+      <div className="max-w-lg w-full bg-gray-300 rounded-lg shadow-lg p-6">
         <div className="flex items-center mb-4">
           <input
             value={location}
@@ -119,10 +132,10 @@ const WeatherApp = () => {
             }}
             placeholder="Enter Location"
             type="text"
-            className="flex-grow bg-gray-200 rounded-lg py-2 px-4 mr-2 focus:outline-none"
+            className="flex-grow bg-gray-200 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-600 hover:scale-105 ease-in-out transition"
           />
           <Icon
-            className="text-gray-600 cursor-pointer"
+            className="text-gray-600 cursor-pointer hover:scale-125 ease-in-out transition"
             onClick={handleLocationClick}
             icon="pepicons-pop:pinpoint"
           />
@@ -132,7 +145,9 @@ const WeatherApp = () => {
             <div className="text-center">
               <p className="text-3xl font-semibold mb-2">{data.name}</p>
               {data.main && (
-                <p className="text-6xl font-bold">{data.main.temp.toFixed()}°C</p>
+                <p className="text-6xl font-bold">
+                  {data.main.temp.toFixed()}°C
+                </p>
               )}
               {data.weather && (
                 <p className="text-xl font-semibold">{data.weather[0].main}</p>
@@ -140,59 +155,65 @@ const WeatherApp = () => {
             </div>
             {data.name !== undefined && (
               <div className="grid grid-cols-3 gap-4 mt-6">
-                <div className="bg-white rounded-lg shadow-lg p-4 text-center">
+                <div className="bg-white rounded-lg shadow-lg p-4 text-center hover:scale-105 ease-in-out transition">
                   {data.main && (
-                    <p className="text-3xl font-bold">{data.main.feels_like.toFixed()}°C</p>
+                    <p className="text-3xl font-bold">
+                      {data.main.feels_like.toFixed()}°C
+                    </p>
                   )}
                   <p className="text-lg">Feels Like</p>
                 </div>
-                <div className="bg-white rounded-lg shadow-lg p-4 text-center">
+                <div className="bg-white rounded-lg shadow-lg p-4 text-center hover:scale-105 ease-in-out transition">
                   {data.main && (
                     <p className="text-3xl font-bold">{data.main.humidity}%</p>
                   )}
                   <p className="text-lg">Humidity</p>
                 </div>
-                <div className="bg-white rounded-lg shadow-lg p-4 text-center">
+                <div className="bg-white rounded-lg shadow-lg p-4 text-center hover:scale-105 ease-in-out transition">
                   {data.wind && (
-                    <p className="text-3xl font-bold">{data.wind.speed.toFixed()} MPH</p>
+                    <p className="text-3xl font-bold">
+                      {data.wind.speed.toFixed()} MPH
+                    </p>
                   )}
                   <p className="text-lg">Wind Speed</p>
                 </div>
               </div>
             )}
-            <div className="flex justify-between mt-6">
+            <div className="flex justify-center mt-4">
               <button
-                className={`text-lg font-semibold focus:outline-none ${
-                  activeTab === "daily" ? "text-blue-500" : ""
+                className={`text-lg font-semibold mr-4 ${
+                  activeTab === "daily" ? "underline text-blue-600" : ""
                 }`}
                 onClick={() => handleTabClick("daily")}
               >
                 Daily Forecast
               </button>
               <button
-                className={`text-lg font-semibold focus:outline-none ${
-                  activeTab === "hourly" ? "text-blue-500" : ""
+                className={`text-lg font-semibold ${
+                  activeTab === "hourly" ? "underline text-blue-600" : ""
                 }`}
                 onClick={() => handleTabClick("hourly")}
               >
-                Hourly Forecast
+                3 Hourly Forecast
               </button>
             </div>
             {activeTab === "daily" && (
               <div>
                 <h2 className="text-2xl font-bold mt-6">Daily Forecast</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {uniqueDates.map((date, index) => {
                     const forecast = forecastData.filter((item) =>
                       item.dt_txt.includes(date)
                     );
                     return (
                       <div
-                        className="bg-white rounded-lg shadow-lg p-4 flex items-center justify-between"
+                        className="bg-white rounded-lg shadow-lg p-4 flex items-center justify-between hover:scale-105 ease-in-out transition"
                         key={index}
                       >
                         <div>
-                          <p className="text-lg font-semibold">{getDay(date)}</p>
+                          <p className="text-lg font-semibold">
+                            {getDay(date)}
+                          </p>
                         </div>
                         <div className="flex items-center">
                           <Icon
@@ -219,12 +240,12 @@ const WeatherApp = () => {
             )}
             {activeTab === "hourly" && (
               <div>
-                <h2 className="text-2xl font-bold mt-6">Hourly Forecast</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <h2 className="text-2xl font-bold mt-6">3 Hourly Forecast</h2>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {hourlyForecastData.map((item, index) => {
                     return (
                       <div
-                        className="bg-white rounded-lg shadow-lg p-4 text-center"
+                        className="bg-white rounded-lg shadow-lg p-4 text-center hover:scale-105 ease-in-out transition"
                         key={index}
                       >
                         <p className="text-lg">{item.dt_txt.split(" ")[1]}</p>
@@ -233,9 +254,7 @@ const WeatherApp = () => {
                           icon={`wi:owm-${item.weather[0].id}`}
                         />
                         <p>{item.weather[0].main}</p>
-                        <p className="text-xl">
-                          {item.main.temp.toFixed()}°C
-                        </p>
+                        <p className="text-xl">{item.main.temp.toFixed()}°C</p>
                       </div>
                     );
                   })}
@@ -247,6 +266,6 @@ const WeatherApp = () => {
       </div>
     </div>
   );
-}
+};
 
 export default WeatherApp;
